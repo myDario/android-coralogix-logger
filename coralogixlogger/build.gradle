@@ -5,16 +5,15 @@ plugins {
     id 'maven-publish'
 }
 
-task androidSourcesJar(type: Jar) {
-    classifier 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-project.afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.myDario'
+            artifactId = 'android-coralogix-logger'
+            version = '1.0.2'
+
+            afterEvaluate {
                 from components.release
-                artifact androidSourcesJar // optional sources
             }
         }
     }
