@@ -1,6 +1,10 @@
 # android-coralogix-logger
 Coralogix logger library for android
 
+## Offline support
+This library will serialize locally the unsent logs, and will send them once back online.
+Logs older than 24 hours will be dropped and not sent.
+
 ## Usage
 Initialize logger:
 ```kotlin
