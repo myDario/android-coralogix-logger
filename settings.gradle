@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Coralogix Logger Sample App"
+
 include ':app'
 include ':coralogixlogger'
