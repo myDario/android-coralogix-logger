@@ -5,6 +5,24 @@ Coralogix logger library for android
 This library will serialize locally the unsent logs, and will send them once back online.
 Logs older than 24 hours will be dropped and not sent.
 
+## Install
+Make sure you have Jitpack repo declared in your root `build.gradle` file:
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Add the dependency to your module or app:
+```gradle
+dependencies {
+    implementation 'com.github.myDario:android-coralogix-logger:1.0.1'
+}
+```
+
 ## Usage
 Initialize logger:
 ```kotlin
