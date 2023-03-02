@@ -5,20 +5,6 @@ plugins {
     id 'maven-publish'
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.github.myDario'
-            artifactId = 'android-coralogix-logger'
-            version = '1.0.2'
-
-            afterEvaluate {
-                from components.release
-            }
-        }
-    }
-}
-
 android {
     namespace 'com.labstyle.coralogixlogger'
     compileSdk 33
@@ -66,4 +52,18 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.myDario'
+                artifactId = 'android-example'
+                version = '1.0.3'
+            }
+        }
+    }
 }
