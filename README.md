@@ -19,7 +19,7 @@ allprojects {
 Add the dependency to your module or app:
 ```gradle
 dependencies {
-    implementation 'com.github.myDario:android-coralogix-logger:1.0.3'
+    implementation 'com.github.myDario:android-coralogix-logger:1.0.4'
 }
 ```
 
