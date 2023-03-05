@@ -2,7 +2,6 @@ package com.labstyle.coralogixlogger
 
 import com.labstyle.coralogixlogger.db.CoralogixLogEntryDao
 import com.labstyle.coralogixlogger.models.CoralogixConfig
-import com.labstyle.coralogixlogger.models.CoralogixLogEntry
 import com.labstyle.coralogixlogger.models.LogApiRequest
 import com.labstyle.coralogixlogger.service.CoralogixApiService
 import kotlinx.coroutines.sync.Mutex
@@ -24,13 +23,9 @@ class QueueWorker(
 
         isProcessing = true
         try {
-            val entries = arrayListOf<CoralogixLogEntry>()
-            entries.addAll(dbDao.getQueue())
+            dbDao.deleteOlderThan(get24hTimestamp())
 
-            val yesterdayTimestamp = get24hTimestamp()
-            val toDelete = entries.filter { entry -> entry.timestamp <= yesterdayTimestamp }
-            toDelete.forEach { dbDao.deleteLogEntry(it) }
-            entries.removeAll(toDelete.toSet())
+            val entries = dbDao.getQueue()
 
             if (entries.isNotEmpty()) {
                 val request = LogApiRequest(
@@ -41,7 +36,7 @@ class QueueWorker(
                 )
                 apiService.log(request)
 
-                entries.forEach { dbDao.deleteLogEntry(it) }
+                dbDao.deleteLogEntries(entries)
             }
         } finally {
             isProcessing = false

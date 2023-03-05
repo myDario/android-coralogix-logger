@@ -1,6 +1,5 @@
 package com.labstyle.coralogixlogger.service
 
-import com.labstyle.coralogixlogger.BuildConfig
 import com.labstyle.coralogixlogger.models.LogApiRequest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,10 +17,10 @@ interface CoralogixApiService {
     suspend fun log(@Body request: LogApiRequest)
 
     companion object {
-        fun buildService(): CoralogixApiService {
+        fun buildService(debug: Boolean = false): CoralogixApiService {
             val interceptor = HttpLoggingInterceptor().apply {
                 this.level =
-                    if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+                    if (debug) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE
             }
             val okClient: OkHttpClient = OkHttpClient.Builder()

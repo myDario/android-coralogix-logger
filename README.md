@@ -19,7 +19,7 @@ allprojects {
 Add the dependency to your module or app:
 ```gradle
 dependencies {
-    implementation 'com.github.myDario:android-coralogix-logger:1.0.6'
+    implementation 'com.github.myDario:android-coralogix-logger:1.0.7'
 }
 ```
 
@@ -46,4 +46,9 @@ CoralogixLogger.log(CoralogixSeverity.INFO, "log info")
     WARN
     ERROR
     CRITICAL
+```
+
+## View debug logs
+```kotlin
+CoralogixLogger.setDebug(true)
 ```

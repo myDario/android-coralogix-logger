@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        CoralogixLogger.setDebug(true)
         CoralogixLogger.initializeApp(
             context = applicationContext,
             privateKey = "de51aff6-e7f4-6b4a-d1de-18e116882dc9",

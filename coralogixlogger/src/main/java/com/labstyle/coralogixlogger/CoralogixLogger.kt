@@ -19,6 +19,7 @@ object CoralogixLogger {
     private var dbDao: CoralogixLogEntryDao? = null
     private var apiService: CoralogixApiService? = null
     private var queueWorker: QueueWorker? = null
+    private var debug = false
 
     fun initializeApp(
         context: Context,
@@ -28,7 +29,7 @@ object CoralogixLogger {
     ) {
         config = CoralogixConfig(privateKey, applicationName, subsystemName)
         dbDao = LogEntriesDb.db(context)?.coralogixLogEntryDao()
-        apiService = CoralogixApiService.buildService()
+        apiService = CoralogixApiService.buildService(debug)
         config?.let { cfg -> dbDao?.let { dao -> apiService?.let { srv ->
             queueWorker = QueueWorker(cfg, dao, srv)
         } } }
@@ -45,7 +46,9 @@ object CoralogixLogger {
                 addToQueue(severity, text)
                 queueWorker?.processQueue()
             } catch (e: Exception) {
-                e.message?.let { Log.e(internalTag, it) }
+                if (debug) {
+                    e.message?.let { Log.w(internalTag, it) }
+                }
             }
         }
     }
@@ -57,5 +60,10 @@ object CoralogixLogger {
             text = text
         )
         dbDao?.saveLogEntry(entry)
+    }
+
+    fun setDebug(debug: Boolean) {
+        this.debug = debug
+        apiService = CoralogixApiService.buildService(CoralogixLogger.debug)
     }
 }

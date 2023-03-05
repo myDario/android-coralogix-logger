@@ -12,5 +12,8 @@ interface CoralogixLogEntryDao {
     suspend fun getQueue(): List<CoralogixLogEntry>
 
     @Delete
-    suspend fun deleteLogEntry(vararg entries: CoralogixLogEntry)
+    suspend fun deleteLogEntries(entries: List<CoralogixLogEntry>)
+
+    @Query("DELETE FROM coralogixlogentry where timestamp <= :timestamp")
+    suspend fun deleteOlderThan(timestamp: Long)
 }
