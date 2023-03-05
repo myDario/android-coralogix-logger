@@ -35,7 +35,11 @@ object CoralogixLogger {
         } } }
     }
 
-    fun log(severity: CoralogixSeverity, text: String) {
+    fun log(severity: CoralogixSeverity, text: String?) {
+        if (text == null) {
+            return
+        }
+
         if (queueWorker == null) {
             Log.w(internalTag, "CoralogixLogger.initialiseApp must be called before any log operation.")
             return
