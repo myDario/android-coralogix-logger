@@ -66,6 +66,10 @@ object CoralogixLogger {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
+            fun completeOnMain(arg: Boolean) {
+                CoroutineScope(Dispatchers.Main).launch { onComplete(arg) }
+            }
+            
             try {
                 val entry = CoralogixLogEntry(
                     timestamp = System.currentTimeMillis(),
@@ -81,7 +85,7 @@ object CoralogixLogger {
                         logEntries = listOf(entry)
                     )
                     apiService?.log(request)
-                    onComplete(true)
+                    completeOnMain(true)
                     return@launch
                 }
             } catch (e: Exception) {
@@ -89,7 +93,7 @@ object CoralogixLogger {
                     e.message?.let { Log.w(internalTag, it) }
                 }
             }
-            onComplete(false)
+            completeOnMain(false)
         }
     }
 
