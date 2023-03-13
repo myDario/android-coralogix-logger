@@ -2,7 +2,7 @@
 Coralogix logger library for android
 
 ## Offline support
-This library will serialize locally the unsent logs, and will send them once back online.
+Can be used with a persistent queue (for offline support), or with an in-memory queue (no persistence). 
 Logs older than 24 hours will be dropped and not sent.
 
 ## Install
@@ -19,7 +19,7 @@ allprojects {
 Add the dependency to your module or app:
 ```gradle
 dependencies {
-    implementation 'com.github.myDario:android-coralogix-logger:1.0.9'
+    implementation 'com.github.myDario:android-coralogix-logger:1.1.0'
 }
 ```
 
@@ -30,7 +30,8 @@ CoralogixLogger.initializeApp(
     context = applicationContext,
     privateKey = "****",
     applicationName = "My app name",
-    subsystemName = "PRD")
+    subsystemName = "PRD",
+    persistence = true)
 ```
 
 Add log:
@@ -51,4 +52,11 @@ CoralogixLogger.log(CoralogixSeverity.INFO, "log info")
 ## View debug logs
 ```kotlin
 CoralogixLogger.setDebug(true)
+```
+
+## Log immediately (no queue)
+```kotlin
+CoralogixLogger.logImmediate(CoralogixSeverity.DEBUG, "immediate") { sent ->
+    Log.d("CLX", "log sent: $sent")
+}
 ```

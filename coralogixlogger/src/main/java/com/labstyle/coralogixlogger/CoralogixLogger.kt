@@ -7,6 +7,7 @@ import com.labstyle.coralogixlogger.db.LogEntriesDb
 import com.labstyle.coralogixlogger.models.CoralogixConfig
 import com.labstyle.coralogixlogger.models.CoralogixLogEntry
 import com.labstyle.coralogixlogger.models.CoralogixSeverity
+import com.labstyle.coralogixlogger.models.LogApiRequest
 import com.labstyle.coralogixlogger.service.CoralogixApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,9 +26,10 @@ object CoralogixLogger {
         context: Context,
         privateKey: String,
         applicationName: String,
-        subsystemName: String
+        subsystemName: String,
+        persistence: Boolean = true
     ) {
-        config = CoralogixConfig(privateKey, applicationName, subsystemName)
+        config = CoralogixConfig(privateKey, applicationName, subsystemName, persistence)
         dbDao = LogEntriesDb.db(context)?.coralogixLogEntryDao()
         apiService = CoralogixApiService.buildService(debug)
         config?.let { cfg -> dbDao?.let { dao -> apiService?.let { srv ->
@@ -47,7 +49,7 @@ object CoralogixLogger {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                addToQueue(severity, text)
+                queueWorker?.addToQueue(severity, text)
                 queueWorker?.processQueue()
             } catch (e: Exception) {
                 if (debug) {
@@ -57,17 +59,43 @@ object CoralogixLogger {
         }
     }
 
-    private suspend fun addToQueue(severity: CoralogixSeverity, text: String) {
-        val entry = CoralogixLogEntry(
-            timestamp = System.currentTimeMillis(),
-            severity = severity.code(),
-            text = text
-        )
-        dbDao?.saveLogEntry(entry)
+    fun logImmediate(severity: CoralogixSeverity, text: String?, onComplete: (Boolean) -> Unit = {}) {
+        if (text == null) {
+            onComplete(false)
+            return
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val entry = CoralogixLogEntry(
+                    timestamp = System.currentTimeMillis(),
+                    severity = severity.code(),
+                    text = text
+                )
+
+                config?.let { cfg ->
+                    val request = LogApiRequest(
+                        privateKey = cfg.privateKey,
+                        applicationName = cfg.applicationName,
+                        subsystemName = cfg.subsystemName,
+                        logEntries = listOf(entry)
+                    )
+                    apiService?.log(request)
+                    onComplete(true)
+                    return@launch
+                }
+            } catch (e: Exception) {
+                if (debug) {
+                    e.message?.let { Log.w(internalTag, it) }
+                }
+            }
+            onComplete(false)
+        }
     }
 
     fun setDebug(debug: Boolean) {
         this.debug = debug
         apiService = CoralogixApiService.buildService(CoralogixLogger.debug)
+        queueWorker?.apiService = apiService as CoralogixApiService
     }
 }

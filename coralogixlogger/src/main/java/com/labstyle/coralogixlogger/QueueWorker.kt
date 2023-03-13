@@ -2,6 +2,8 @@ package com.labstyle.coralogixlogger
 
 import com.labstyle.coralogixlogger.db.CoralogixLogEntryDao
 import com.labstyle.coralogixlogger.models.CoralogixConfig
+import com.labstyle.coralogixlogger.models.CoralogixLogEntry
+import com.labstyle.coralogixlogger.models.CoralogixSeverity
 import com.labstyle.coralogixlogger.models.LogApiRequest
 import com.labstyle.coralogixlogger.service.CoralogixApiService
 import kotlinx.coroutines.sync.Mutex
@@ -11,9 +13,10 @@ import java.util.*
 class QueueWorker(
     private val config: CoralogixConfig,
     private val dbDao: CoralogixLogEntryDao,
-    private val apiService: CoralogixApiService
+    var apiService: CoralogixApiService
 ) {
     private var isProcessing = false
+    private val inMemoryQueue = ArrayList<CoralogixLogEntry>()
     private val mutex = Mutex()
 
     suspend fun processQueue() = mutex.withLock {
@@ -23,9 +26,16 @@ class QueueWorker(
 
         isProcessing = true
         try {
-            dbDao.deleteOlderThan(get24hTimestamp())
+            if (config.persistence) {
+                dbDao.deleteOlderThan(get24hTimestamp())
+            } else {
+                val old = inMemoryQueue.filter { it.timestamp <= get24hTimestamp() }
+                if (old.isNotEmpty()) {
+                    inMemoryQueue.removeAll(old.toSet())
+                }
+            }
 
-            val entries = dbDao.getQueue()
+            val entries = if (config.persistence) dbDao.getQueue() else inMemoryQueue
 
             if (entries.isNotEmpty()) {
                 val request = LogApiRequest(
@@ -36,7 +46,11 @@ class QueueWorker(
                 )
                 apiService.log(request)
 
-                dbDao.deleteLogEntries(entries)
+                if (config.persistence) {
+                    dbDao.deleteLogEntries(entries)
+                } else {
+                    inMemoryQueue.clear()
+                }
             }
         } finally {
             isProcessing = false
@@ -50,5 +64,19 @@ class QueueWorker(
         // remove 5 minutes for api call time
         cal.add(Calendar.MINUTE, -5)
         return cal.timeInMillis
+    }
+
+    suspend fun addToQueue(severity: CoralogixSeverity, text: String) {
+        val entry = CoralogixLogEntry(
+            timestamp = System.currentTimeMillis(),
+            severity = severity.code(),
+            text = text
+        )
+
+        if (config.persistence) {
+            dbDao.saveLogEntry(entry)
+        } else {
+            inMemoryQueue.add(entry)
+        }
     }
 }

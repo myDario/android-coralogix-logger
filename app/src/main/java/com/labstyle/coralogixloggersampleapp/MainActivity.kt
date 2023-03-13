@@ -3,6 +3,7 @@ package com.labstyle.coralogixloggersampleapp
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.labstyle.coralogixlogger.CoralogixLogger
 import com.labstyle.coralogixlogger.models.CoralogixSeverity
@@ -21,7 +22,9 @@ class MainActivity : AppCompatActivity() {
             context = applicationContext,
             privateKey = "de51aff6-e7f4-6b4a-d1de-18e116882dc9",
             applicationName = "dario_health",
-            subsystemName = "STG")
+            subsystemName = "STG",
+            persistence = true
+        )
 
         binding.outputText.text = "Logger initialized. Adding more logs..."
 
@@ -34,6 +37,10 @@ class MainActivity : AppCompatActivity() {
             CoralogixLogger.log(CoralogixSeverity.INFO, "test info")
             binding.outputText.text = "Logs added."
         }, 1500)
+
+        CoralogixLogger.logImmediate(CoralogixSeverity.DEBUG, "immediate") { sent ->
+            Log.d("CLX", "log sent: $sent")
+        }
     }
 
 
