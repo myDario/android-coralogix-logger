@@ -66,14 +66,6 @@ publishing {
             }
         }
     }
-    /*
-    publications {
-        gpr(MavenPublication) {
-            from components.release
-        }
-    }
-
-     */
 }
 
 project.afterEvaluate {
@@ -85,22 +77,3 @@ project.afterEvaluate {
         }
     }
 }
-
-/*
-task androidSourcesJar(type: Jar) {
-    classifier 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-project.afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                artifact androidSourcesJar // optional sources
-            }
-        }
-    }
-}
-
- */
