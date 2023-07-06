@@ -11,6 +11,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
+      - name: Set env
+        run: |
+          echo "USERNAME=cloudroot" >> $GITHUB_ENV
+          echo "TOKEN=${{secrets.CICD_TOKEN}}" >> $GITHUB_ENV
       - name: Publish package
         run: gradle -Pversion=${{ github.event.release.tag_name }} build publish
         env:
