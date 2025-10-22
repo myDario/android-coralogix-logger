@@ -6,6 +6,7 @@ import com.labstyle.coralogixlogger.db.CoralogixLogEntryDao
 import com.labstyle.coralogixlogger.db.LogEntriesDb
 import com.labstyle.coralogixlogger.models.CoralogixConfig
 import com.labstyle.coralogixlogger.models.CoralogixLogEntry
+import com.labstyle.coralogixlogger.models.CoralogixRegion
 import com.labstyle.coralogixlogger.models.CoralogixSeverity
 import com.labstyle.coralogixlogger.models.LogApiRequest
 import com.labstyle.coralogixlogger.service.CoralogixApiService
@@ -27,11 +28,12 @@ object CoralogixLogger {
         privateKey: String,
         applicationName: String,
         subsystemName: String,
+        region: CoralogixRegion = CoralogixRegion.US1,
         persistence: Boolean = true
     ) {
-        config = CoralogixConfig(privateKey, applicationName, subsystemName, persistence)
+        config = CoralogixConfig(privateKey, applicationName, subsystemName, region, persistence)
         dbDao = LogEntriesDb.db(context)?.coralogixLogEntryDao()
-        apiService = CoralogixApiService.buildService(debug)
+        apiService = CoralogixApiService.buildService(region, debug)
         config?.let { cfg -> dbDao?.let { dao -> apiService?.let { srv ->
             queueWorker = QueueWorker(cfg, dao, srv)
         } } }
@@ -95,7 +97,9 @@ object CoralogixLogger {
 
     fun setDebug(debug: Boolean) {
         this.debug = debug
-        apiService = CoralogixApiService.buildService(CoralogixLogger.debug)
-        queueWorker?.apiService = apiService as CoralogixApiService
+        config?.let { cfg ->
+            apiService = CoralogixApiService.buildService(cfg.region, CoralogixLogger.debug)
+            queueWorker?.apiService = apiService as CoralogixApiService
+        }
     }
 }
