@@ -14,12 +14,13 @@
 bin/
 gen/
 out/
-#  Uncomment the following line in case you need and you don't have the release build type files in your app
-# release/
 
 # Gradle files
 .gradle/
 build/
+**/build/
+gradle-app.setting
+!gradle-wrapper.jar
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -36,31 +37,32 @@ proguard/
 # Android Studio captures folder
 captures/
 
-# IntelliJ
+# IntelliJ IDEA
 *.iml
+.idea/
+.idea/*
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/assetWizardSettings.xml
 .idea/dictionaries
 .idea/libraries
-# Android Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
-# Comment next line if keeping position of elements in Navigation Editor is relevant for you
 .idea/navEditor.xml
+.idea/misc.xml
+.idea/vcs.xml
 
 # Keystore files
-# Uncomment the following lines if you do not want to check your keystore files in.
-#*.jks
-#*.keystore
+*.jks
+*.keystore
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx/
 
 # Google Services (e.g. APIs or Firebase)
-# google-services.json
+google-services.json
 
 # Freeline
 freeline.py
@@ -74,16 +76,30 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
-# Version control
-vcs.xml
-
 # lint
 lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
-# lint/reports/
 
 # Mac
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Kotlin
+*.kotlin_module
+.kotlin/
+
+# Android Profiling
+*.hprof
+
+# Unwanted documentation (keep only README.md)
+SETUP_COMPLETE.md
+RELEASE.md
+INTEGRATION_GUIDE.md
 
