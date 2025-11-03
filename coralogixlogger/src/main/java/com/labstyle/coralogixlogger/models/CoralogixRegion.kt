@@ -11,7 +11,7 @@ enum class CoralogixRegion(val code: String) {
     EU2("eu2"),
     AP1("ap1"),
     AP2("ap2"),
-    AP3("ap3")
+    AP3("ap3");
     
     fun getBaseUrl(): String = "https://ingress.$code.coralogix.com/"
 }
