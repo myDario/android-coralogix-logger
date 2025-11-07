@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.labstyle.coralogixlogger.CoralogixLogger
 import com.labstyle.coralogixlogger.models.CoralogixLogEntry
+import com.labstyle.coralogixlogger.models.CoralogixRegion
 import com.labstyle.coralogixlogger.models.CoralogixSeverity
 import com.labstyle.coralogixloggersampleapp.databinding.ActivityMainBinding
 
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
             privateKey = "xxx",
             applicationName = "xxx",
             subsystemName = "xxx",
+            region = CoralogixRegion.US1,
             persistence = true
         )
 
