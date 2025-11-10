@@ -73,6 +73,9 @@ project.afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
+                groupId = 'com.github.myDario'
+                artifactId = 'android-coralogix-logger'
+                version = android.defaultConfig.versionName
             }
         }
     }

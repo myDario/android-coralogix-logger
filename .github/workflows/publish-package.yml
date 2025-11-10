@@ -15,7 +15,9 @@ jobs:
         run: |
           echo "USERNAME=raphael-dario" >> $GITHUB_ENV
           echo "TOKEN=${{secrets.PUBLISH_TOKEN}}" >> $GITHUB_ENV
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Publish package
-        run: gradle -Pversion=${{ github.event.release.tag_name }} build publish
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name }} build publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
