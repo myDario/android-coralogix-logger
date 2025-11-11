@@ -1,4 +1,4 @@
 jdk:
   - openjdk11
 install:
-  - ./gradlew :coralogixlogger:build :coralogixlogger:publishToMavenLocal -x test -x lint
+  - ./gradlew :coralogixlogger:assembleRelease :coralogixlogger:publishToMavenLocal -x test -x lint
