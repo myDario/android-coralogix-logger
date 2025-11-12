@@ -50,7 +50,6 @@ class QueueWorker(
 
             if (entries.isNotEmpty()) {
                 val request = LogApiRequest(
-                    privateKey = config.privateKey,
                     applicationName = config.applicationName,
                     subsystemName = config.subsystemName,
                     logEntries = entries
