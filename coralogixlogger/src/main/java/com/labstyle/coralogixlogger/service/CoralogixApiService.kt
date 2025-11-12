@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 private const val TIMEOUT_SECONDS = 120L
 
 interface CoralogixApiService {
-    @POST("logs/v1/singles")
+    @POST("api/v1/logs")
     suspend fun log(@Body request: LogApiRequest)
 
     companion object {
@@ -34,8 +34,8 @@ interface CoralogixApiService {
             }
             
             val okClient: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
                 .addInterceptor(authInterceptor)
+                .addInterceptor(loggingInterceptor)
                 .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
