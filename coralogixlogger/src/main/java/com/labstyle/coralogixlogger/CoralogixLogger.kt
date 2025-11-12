@@ -33,7 +33,7 @@ object CoralogixLogger {
     ) {
         config = CoralogixConfig(privateKey, applicationName, subsystemName, region, persistence)
         dbDao = LogEntriesDb.db(context)?.coralogixLogEntryDao()
-        apiService = CoralogixApiService.buildService(region, debug)
+        apiService = CoralogixApiService.buildService(region, privateKey, debug)
         config?.let { cfg -> dbDao?.let { dao -> apiService?.let { srv ->
             queueWorker = QueueWorker(cfg, dao, srv)
         } } }
@@ -77,7 +77,6 @@ object CoralogixLogger {
             try {
                 config?.let { cfg ->
                     val request = LogApiRequest(
-                        privateKey = cfg.privateKey,
                         applicationName = cfg.applicationName,
                         subsystemName = cfg.subsystemName,
                         logEntries = entriesToSend
@@ -98,7 +97,7 @@ object CoralogixLogger {
     fun setDebug(debug: Boolean) {
         this.debug = debug
         config?.let { cfg ->
-            apiService = CoralogixApiService.buildService(cfg.region, CoralogixLogger.debug)
+            apiService = CoralogixApiService.buildService(cfg.region, cfg.privateKey, CoralogixLogger.debug)
             queueWorker?.apiService = apiService as CoralogixApiService
         }
     }
