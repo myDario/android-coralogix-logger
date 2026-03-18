@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 private const val TIMEOUT_SECONDS = 120L
 
 interface CoralogixApiService {
-    @POST("api/v1/logs")
+    @POST("logs/v1/bulk")
     suspend fun log(@Body request: LogApiRequest)
 
     companion object {
