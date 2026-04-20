@@ -2,7 +2,7 @@ package com.labstyle.coralogixlogger.models
 
 /**
  * Coralogix regional endpoints.
- * URL pattern: https://ingress.{region}.coralogix.com/logs/v1/singles
+ * URL pattern: https://ingress.{region}.coralogix.com/logs/v1/bulk
  */
 enum class CoralogixRegion(val code: String) {
     US1("us1"),

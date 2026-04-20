@@ -2,7 +2,7 @@
 Coralogix logger library for android
 
 ## ⚠️ Important Update - Regional Endpoints
-As of December 12, 2025, Coralogix has deprecated legacy log ingestion endpoints. This library now uses the new regional endpoint format: `https://ingress.{region}.coralogix.com/logs/v1/singles`
+As of December 12, 2025, Coralogix has deprecated legacy log ingestion endpoints. This library now uses the new regional endpoint format: `https://ingress.{region}.coralogix.com/logs/v1/bulk`
 
 **You must specify your Coralogix region** when initializing the logger.
 
@@ -43,7 +43,7 @@ CoralogixLogger.initializeApp(
 ## Regional Endpoints
 Available regions: `US1`, `US2`, `EU1`, `EU2`, `AP1`, `AP2`, `AP3`
 
-URL pattern: `https://ingress.{region}.coralogix.com/logs/v1/singles`
+URL pattern: `https://ingress.{region}.coralogix.com/logs/v1/bulk`
 
 Add log:
 ```kotlin
@@ -109,7 +109,7 @@ CoralogixLogger.initializeApp(
 - ✅ Added regional endpoint support (US1, US2, EU1, EU2, AP1, AP2, AP3)
 - ✅ Migrated from deprecated legacy endpoints
 - ✅ 100% backward compatible (defaults to US1)
-- ✅ New URL pattern: `https://ingress.{region}.coralogix.com/logs/v1/singles`
+- ✅ New URL pattern: `https://ingress.{region}.coralogix.com/logs/v1/bulk`
 
 ### Version 1.1.3 (Legacy)
 - Uses deprecated endpoint: `https://api.coralogix.us/api/v1/`
